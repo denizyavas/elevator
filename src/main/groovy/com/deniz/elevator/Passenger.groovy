@@ -5,23 +5,33 @@ package com.deniz.elevator
  * date: 02/08/2015
  */
 class Passenger {
+
+    String name
     int time
     int sourceFloor
     int targetFloor
-    String name
-
-    void callElevator(Elevator elevator) {
-        println "Passenger $name is calling elevator from floor: $sourceFloor  at time:$time"
-        elevator.addPassengerToCallerList(this)
-    }
+    boolean isTemporary
 
     @Override
     public String toString() {
         return "Passenger{" +
-                "time=" + time +
+                "name='" + name + '\'' +
+                ", time=" + time +
                 ", sourceFloor=" + sourceFloor +
                 ", targetFloor=" + targetFloor +
-                ", name='" + name + '\'' +
+                ", isTemporary=" + isTemporary +
                 '}';
+    }
+
+    int nextStep() {
+        isTemporary ? sourceFloor : targetFloor
+    }
+
+    Elevator.Direction desiredDirection() {
+        if (sourceFloor > targetFloor) {
+            Elevator.Direction.DOWN
+        } else {
+            Elevator.Direction.UP
+        }
     }
 }

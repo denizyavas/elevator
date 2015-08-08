@@ -1,6 +1,9 @@
 package elevator
 
 import com.deniz.elevator.Elevator
+import com.deniz.elevator.ElevatorLogic
+import com.deniz.elevator.Metric
+
 import static com.deniz.elevator.Elevator.Direction.UP
 import static com.deniz.elevator.Elevator.Direction.DOWN
 import static com.deniz.elevator.Elevator.Direction.IMMOBILE
@@ -14,7 +17,9 @@ import static org.junit.Assert.assertEquals
  */
 class ElevatorTest {
 
-    Elevator elevator = new Elevator(10)
+    Metric metric = new Metric(null)
+    ElevatorLogic elevatorLogic = new ElevatorLogic(10, 1, metric)
+    Elevator elevator = elevatorLogic.elevators.get(0)
 
     @Test
     void test1() {
@@ -24,9 +29,9 @@ class ElevatorTest {
         elevator.passengerList = [
                 new Passenger(targetFloor: 7)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -34,16 +39,15 @@ class ElevatorTest {
 
     @Test
     void test2() {
-        Elevator elevator = new Elevator()
         elevator.direction = UP
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 7)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -51,31 +55,29 @@ class ElevatorTest {
 
     @Test
     void test3() {
-        Elevator elevator = new Elevator()
         elevator.direction = UP
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
-        assertEquals elevator.direction, IMMOBILE
-        assertEquals elevator.currentFloor, 5
+        assertEquals elevator.direction, DOWN
+        assertEquals elevator.currentFloor, 4
     }
 
     @Test
     void test4() {
-        Elevator elevator = new Elevator()
         elevator.direction = UP
         elevator.currentFloor = 5
 
         elevator.passengerList = [
                 new Passenger(targetFloor: 2)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -83,16 +85,15 @@ class ElevatorTest {
 
     @Test
     void test5() {
-        Elevator elevator = new Elevator()
         elevator.direction = UP
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 3)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -101,16 +102,15 @@ class ElevatorTest {
 
     @Test
     void test6() {
-        Elevator elevator = new Elevator()
         elevator.direction = DOWN
         elevator.currentFloor = 5
 
         elevator.passengerList = [
                 new Passenger(targetFloor: 3)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -118,16 +118,15 @@ class ElevatorTest {
 
     @Test
     void test7() {
-        Elevator elevator = new Elevator()
         elevator.direction = DOWN
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 3)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -135,31 +134,29 @@ class ElevatorTest {
 
     @Test
     void test8() {
-        Elevator elevator = new Elevator()
         elevator.direction = DOWN
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
-        assertEquals elevator.direction, IMMOBILE
-        assertEquals elevator.currentFloor, 5
+        assertEquals elevator.direction, DOWN
+        assertEquals elevator.currentFloor, 4
     }
 
     @Test
     void test9() {
-        Elevator elevator = new Elevator()
         elevator.direction = DOWN
         elevator.currentFloor = 5
 
         elevator.passengerList = [
                 new Passenger(targetFloor: 8)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -167,16 +164,15 @@ class ElevatorTest {
 
     @Test
     void test10() {
-        Elevator elevator = new Elevator()
         elevator.direction = DOWN
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 9)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -184,7 +180,6 @@ class ElevatorTest {
 
     @Test
     void test11() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
@@ -192,9 +187,9 @@ class ElevatorTest {
                 new Passenger(targetFloor: 8),
                 new Passenger(targetFloor: 1)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -202,7 +197,6 @@ class ElevatorTest {
 
     @Test
     void test12() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
@@ -210,9 +204,9 @@ class ElevatorTest {
                 new Passenger(targetFloor: 9),
                 new Passenger(targetFloor: 2)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -220,16 +214,15 @@ class ElevatorTest {
 
     @Test
     void test13() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = [
                 new Passenger(targetFloor: 5)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, IMMOBILE
         assertEquals elevator.currentFloor, 5
@@ -237,17 +230,16 @@ class ElevatorTest {
 
     @Test
     void test14() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 8),
                 new Passenger(sourceFloor: 1)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -255,17 +247,16 @@ class ElevatorTest {
 
     @Test
     void test15() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 9),
                 new Passenger(sourceFloor: 2)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -273,16 +264,15 @@ class ElevatorTest {
 
     @Test
     void test16() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 5)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, IMMOBILE
         assertEquals elevator.currentFloor, 5
@@ -290,22 +280,20 @@ class ElevatorTest {
 
     @Test
     void test17() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
-        assertEquals elevator.direction, IMMOBILE
-        assertEquals elevator.currentFloor, 5
+        assertEquals elevator.direction, DOWN
+        assertEquals elevator.currentFloor, 4
     }
 
     @Test
     void test18() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
@@ -313,9 +301,9 @@ class ElevatorTest {
                 new Passenger(targetFloor: 9),
                 new Passenger(targetFloor: 1)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -323,7 +311,6 @@ class ElevatorTest {
 
     @Test
     void test19() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
@@ -331,9 +318,9 @@ class ElevatorTest {
                 new Passenger(targetFloor: 1),
                 new Passenger(targetFloor: 9)
         ]
-        elevator.callerList = []
+        elevatorLogic.callerList = []
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4
@@ -341,17 +328,16 @@ class ElevatorTest {
 
     @Test
     void test20() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 9),
                 new Passenger(sourceFloor: 1)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, UP
         assertEquals elevator.currentFloor, 6
@@ -360,17 +346,16 @@ class ElevatorTest {
 
     @Test
     void test21() {
-        Elevator elevator = new Elevator()
         elevator.direction = IMMOBILE
         elevator.currentFloor = 5
 
         elevator.passengerList = []
-        elevator.callerList = [
+        elevatorLogic.callerList = [
                 new Passenger(sourceFloor: 1),
                 new Passenger(sourceFloor: 9)
         ]
 
-        elevator.move()
+        elevatorLogic.moveElevators()
 
         assertEquals elevator.direction, DOWN
         assertEquals elevator.currentFloor, 4

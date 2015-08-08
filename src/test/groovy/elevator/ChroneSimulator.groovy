@@ -2,6 +2,7 @@ package elevator
 
 import com.deniz.elevator.Chrone
 import com.deniz.elevator.Passenger
+import elevator.util.RandomUtil
 import org.junit.Test
 
 /**
@@ -10,50 +11,79 @@ import org.junit.Test
  */
 class ChroneSimulator {
 
-    final int MAX_TIME = 15
-    final int MAX_FLOOR = 10
-    final int NO_OF_PASSENGERS = 5
+    final def PROBABILITY_OF_FLOORS = [[0, 1, 50], [1, 31, 2]]
+    //final int NO_OF_PASSENGERS = 10
+    final int NO_OF_PASSENGERS = 1000
+    final int NO_OF_ELEVATORS = 5
 
-    // class variable
-    final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZ12345674890";
-
-    final Random rand = new Random();
-
-    // consider using a Map<String,Boolean> to say whether the identifier is being used or not
-    final Set<String> identifiers = new HashSet<String>();
-
-    public String randomIdentifier() {
-        StringBuilder builder = new StringBuilder();
-        while (builder.toString().length() == 0) {
-            int length = rand.nextInt(5) + 5;
-            for (int i = 0; i < length; i++) {
-                builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
-                if (identifiers.contains(builder.toString())) {
-                    builder = new StringBuilder();
-                }
-            }
-        }
-        return builder.toString();
-    }
+//    final def PROBABILITY_IN_TIME = [[0, 300, 10]]
+    final
+    def PROBABILITY_IN_TIME = [[0, 3600, 10], [3601, 25200, 5], [25201, 32400, 30], [32401, 61200, 10], [61201, 72000, 30], [72001, 86400, 15]]
+    final def TIMES = 5
 
     @Test
     void callElevatorInTimeTest() {
-        Random rand = new Random()
-        def passengers = []
+        def maxFloor = PROBABILITY_OF_FLOORS[PROBABILITY_OF_FLOORS.size() - 1].get(1) - 1
+        for (int i = 1; i <= NO_OF_ELEVATORS; i++) {
+            def averageServingTime = 0
+            def averageTravelTime = 0
+            def averageLeadTime = 0
+            TIMES.times {
+                def passengers = []
+                boolean justiceFlag = true
 
-        NO_OF_PASSENGERS.times {
-            passengers << new Passenger(time: rand.nextInt(MAX_TIME + 1), sourceFloor: rand.nextInt(MAX_FLOOR + 1), targetFloor: rand.nextInt(MAX_FLOOR + 1), name: randomIdentifier())
-        }
+                NO_OF_PASSENGERS.times {
+                    def sourceFloor = RandomUtil.generatedRandomness(PROBABILITY_OF_FLOORS)
+                    def targetFloor = RandomUtil.generatedRandomness(PROBABILITY_OF_FLOORS)
+                    while (sourceFloor == targetFloor) {
+                        if (justiceFlag) {
+                            targetFloor = RandomUtil.generatedRandomness(PROBABILITY_OF_FLOORS)
+                            justiceFlag = false
+                        } else {
+                            sourceFloor = RandomUtil.generatedRandomness(PROBABILITY_OF_FLOORS)
+                            justiceFlag = true
+                        }
+                    }
+                    passengers << new Passenger(time: RandomUtil.generatedRandomness(PROBABILITY_IN_TIME), sourceFloor: sourceFloor, targetFloor: targetFloor, name: RandomUtil.randomIdentifier())
+                }
 
-        Chrone chrone = new Chrone(MAX_FLOOR, passengers)
 
-        println "PASSENGER MANIFEST"
-        passengers.each {
-            println it
-        }
+                println "PASSENGER MANIFEST"
+                passengers.sort {
+                    it.time
+                }.each {
+                    println it
+                }
 
-        while (chrone.elevator.passengerList || chrone.elevator.callerList || chrone.passengers) {
-            chrone.passTime()
+
+                Chrone chrone = new Chrone(maxFloor, passengers, i)
+
+                while (chrone.elevatorLogic.elevators.passengerList.sum() || chrone.elevatorLogic.callerList || chrone.futurePassengers) {
+                    chrone.passTime()
+                }
+
+                def sumOfPassengerCallElevators = chrone.metric.passengerMetric.callTime.sum()
+                def sumOfPassengerBoardElevators = chrone.metric.passengerMetric.boardingTime.sum()
+                def sumOfPassengerDepartElevators = chrone.metric.passengerMetric.departingTime.sum()
+
+                averageServingTime += (sumOfPassengerBoardElevators - sumOfPassengerCallElevators) / NO_OF_PASSENGERS
+
+                averageTravelTime += (sumOfPassengerDepartElevators - sumOfPassengerBoardElevators) / NO_OF_PASSENGERS
+
+                averageLeadTime += (sumOfPassengerDepartElevators - sumOfPassengerCallElevators) / NO_OF_PASSENGERS
+
+                /*
+                println "a"
+                println "Passenger travel time: ${averageTravelTime}"
+                println "Passenger journey time: ${averageLeadTime}"
+                println "Caller wait time: ${averageServingTime}"
+                 */
+            }
+
+            println "$NO_OF_PASSENGERS passengers in $TIMES day with $i elevators on a $maxFloor floor apartment"
+            println "Caller wait time: ${averageServingTime / TIMES}"
+            println "Passenger travel time: ${averageTravelTime / TIMES}"
+            println "Passenger journey time: ${averageLeadTime / TIMES}"
         }
     }
 

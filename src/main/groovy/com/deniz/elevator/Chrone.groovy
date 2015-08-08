@@ -7,32 +7,41 @@ package com.deniz.elevator
 class Chrone {
 
     int now = 0
+    def futurePassengers
+    Metric metric
+    ElevatorLogic elevatorLogic
 
-    def passengers = []
-
-    Elevator elevator
-
-    Chrone(maxFloor, passengers) {
-        this.elevator = new Elevator(maxFloor)
-        this.passengers = passengers
+    Chrone(maxFloor, futurePassengers, numberOfElevators) {
+        this.metric = new Metric(futurePassengers)
+        elevatorLogic = new ElevatorLogic(maxFloor, numberOfElevators, metric)
+        this.futurePassengers = futurePassengers
     }
 
     void passTime() {
-        println "===Time $now==="
-        println "Elevator is on floor: $elevator.currentFloor"
-        //Call elevator
-        passengers.findAll {
+        def elevators = elevatorLogic.elevators
+        /*println "===Time $now==="
+        elevators.each {
+            println "Elevator $it.id is on floor: $it.currentFloor"
+        }*/
+        //Call elevator if passenger's time has come
+        futurePassengers.findAll {
             it.time == now
-        }.each {
-            it.callElevator(elevator)
-            passengers.remove(it)
+        }.each { Passenger passenger ->
+            //println "Passenger $passenger.name is calling elevator from floor: $passenger.sourceFloor  at time:$passenger.time"
+            elevatorLogic.addPassengerToCallerList(passenger, now)
+            futurePassengers.remove(passenger)
         }
 
-        //Load/Unload passengers
-        elevator.transferLoad()
+        //Load passengers
+        elevatorLogic.decideElevatorToEmbark(now)
 
-        //Move up or down
-        elevator.move()
+        elevators.each { Elevator elevator ->
+            //Unload passengers
+            elevator.disembarkPassengers(now)
+        }
+
+        //Move elevators
+        elevatorLogic.moveElevators()
 
         now++
     }
