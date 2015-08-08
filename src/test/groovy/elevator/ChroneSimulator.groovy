@@ -12,11 +12,9 @@ import org.junit.Test
 class ChroneSimulator {
 
     final def PROBABILITY_OF_FLOORS = [[0, 1, 50], [1, 31, 2]]
-    //final int NO_OF_PASSENGERS = 10
     final int NO_OF_PASSENGERS = 1000
     final int NO_OF_ELEVATORS = 5
 
-//    final def PROBABILITY_IN_TIME = [[0, 300, 10]]
     final
     def PROBABILITY_IN_TIME = [[0, 3600, 10], [3601, 25200, 5], [25201, 32400, 30], [32401, 61200, 10], [61201, 72000, 30], [72001, 86400, 15]]
     final def TIMES = 5
@@ -47,14 +45,14 @@ class ChroneSimulator {
                     passengers << new Passenger(time: RandomUtil.generatedRandomness(PROBABILITY_IN_TIME), sourceFloor: sourceFloor, targetFloor: targetFloor, name: RandomUtil.randomIdentifier())
                 }
 
-
+/*
                 println "PASSENGER MANIFEST"
                 passengers.sort {
                     it.time
                 }.each {
                     println it
                 }
-
+*/
 
                 Chrone chrone = new Chrone(maxFloor, passengers, i)
 

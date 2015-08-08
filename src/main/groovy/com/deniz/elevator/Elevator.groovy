@@ -1,13 +1,12 @@
 package com.deniz.elevator
 
-import static com.deniz.elevator.Elevator.Direction.UP
-import static com.deniz.elevator.Elevator.Direction.DOWN
-import static com.deniz.elevator.Elevator.Direction.IMMOBILE
+import static com.deniz.elevator.Elevator.Direction.*
 
 /**
  * author: TRYavasU
  * date: 02/08/2015
  */
+//@Log4j
 class Elevator {
 
     def id
@@ -39,7 +38,7 @@ class Elevator {
         passengerList.findAll {
             it.targetFloor == currentFloor
         }.each {
-            //println "Passenger with name : $it.name has left the elevator"
+            //log.debug "Passenger with name : $it.name has left the elevator"
             metric.unloadPassengerMetric(it, now)
             passengerList.remove(it)
         }
@@ -51,12 +50,8 @@ class Elevator {
         metric.loadPassengerMetric(passenger, now)
     }
 
-    void assignTemporaryPassenger(passenger) {
-        passenger.isTemporary = true
-        passengerList.add(passenger)
-    }
-
     enum Direction {
         UP, DOWN, IMMOBILE
     }
+
 }

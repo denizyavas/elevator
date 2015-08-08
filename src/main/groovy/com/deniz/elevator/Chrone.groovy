@@ -9,20 +9,20 @@ class Chrone {
     int now = 0
     def futurePassengers
     Metric metric
-    ElevatorLogic elevatorLogic
+    MyElevatorLogic elevatorLogic
 
     Chrone(maxFloor, futurePassengers, numberOfElevators) {
         this.metric = new Metric(futurePassengers)
-        elevatorLogic = new ElevatorLogic(maxFloor, numberOfElevators, metric)
+        elevatorLogic = new MyElevatorLogic(maxFloor, numberOfElevators, metric)
         this.futurePassengers = futurePassengers
     }
 
     void passTime() {
         def elevators = elevatorLogic.elevators
-        /*println "===Time $now==="
+//        log. debug "===Time $now==="
         elevators.each {
-            println "Elevator $it.id is on floor: $it.currentFloor"
-        }*/
+            //          log.debug "Elevator $it.id is on floor: $it.currentFloor"
+        }
         //Call elevator if passenger's time has come
         futurePassengers.findAll {
             it.time == now

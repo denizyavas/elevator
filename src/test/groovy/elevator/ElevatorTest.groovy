@@ -3,6 +3,7 @@ package elevator
 import com.deniz.elevator.Elevator
 import com.deniz.elevator.ElevatorLogic
 import com.deniz.elevator.Metric
+import com.deniz.elevator.MyElevatorLogic
 
 import static com.deniz.elevator.Elevator.Direction.UP
 import static com.deniz.elevator.Elevator.Direction.DOWN
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertEquals
 class ElevatorTest {
 
     Metric metric = new Metric(null)
-    ElevatorLogic elevatorLogic = new ElevatorLogic(10, 1, metric)
+    ElevatorLogic elevatorLogic = new MyElevatorLogic(10, 1, metric)
     Elevator elevator = elevatorLogic.elevators.get(0)
 
     @Test
@@ -63,8 +64,8 @@ class ElevatorTest {
 
         elevatorLogic.moveElevators()
 
-        assertEquals elevator.direction, DOWN
-        assertEquals elevator.currentFloor, 4
+        assertEquals elevator.direction, IMMOBILE
+        assertEquals elevator.currentFloor, 5
     }
 
     @Test
@@ -142,8 +143,8 @@ class ElevatorTest {
 
         elevatorLogic.moveElevators()
 
-        assertEquals elevator.direction, DOWN
-        assertEquals elevator.currentFloor, 4
+        assertEquals elevator.direction, IMMOBILE
+        assertEquals elevator.currentFloor, 5
     }
 
     @Test
@@ -288,8 +289,8 @@ class ElevatorTest {
 
         elevatorLogic.moveElevators()
 
-        assertEquals elevator.direction, DOWN
-        assertEquals elevator.currentFloor, 4
+        assertEquals elevator.direction, IMMOBILE
+        assertEquals elevator.currentFloor, 5
     }
 
     @Test
